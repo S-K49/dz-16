@@ -47,8 +47,7 @@ public class ApiTests {
         RestAssured.requestSpecification.cookie(TOKEN, TOKEN_VALUE);
 
 //        String rawResponse = response.getBody().asString();
-//        System.out.println("Raw Response:");
-//        System.out.println(rawResponse);
+//        System.out.println("Raw Response:" + rawResponse);
     }
 
     @Test
@@ -101,7 +100,7 @@ public class ApiTests {
         response.prettyPrint();
 //        response.then().assertThat().body(body.getFirstname().equals("Valera"), true);
 
-//        response.as(ResponseBooking.class);
+        response.as(ResponseBooking.class);
 //        JSONObject response2 = new JSONObject(response.getBody());
 //        ((JSONObject)response2.get("bookingid")).get("firstname");
     }
