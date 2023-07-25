@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ResponseBooking {
-    private Object booking;
-    private BookingId bookingid;
+    private BookingId booking;
+    private Integer bookingid;
 }

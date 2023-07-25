@@ -1,23 +1,20 @@
 package tests;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.parsing.Parser;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.joda.time.LocalDate;
 import org.json.JSONObject;
-import org.mozilla.javascript.Token;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
+
+
+import static java.lang.String.valueOf;
 
 public class ApiTests {
 
@@ -45,41 +42,19 @@ public class ApiTests {
         response.prettyPrint();
         TOKEN_VALUE = response.then().extract().jsonPath().get(TOKEN);
         RestAssured.requestSpecification.cookie(TOKEN, TOKEN_VALUE);
-
-//        String rawResponse = response.getBody().asString();
-//        System.out.println("Raw Response:" + rawResponse);
-    }
-
-    @Test
-    public void auth() {
-        Authenticaton body = new Authenticaton().builder()
-                .username("admin")
-                .password("password123")
-                .build();
-
-        Response response = RestAssured.given().log().all()
-                .header("Accept", "application/json")
-                .body(body)
-                .post("/auth");
-
-        response.prettyPrint();
-        TOKEN_VALUE = response.then().extract().jsonPath().get(TOKEN);
-
-//        String rawResponse = response.getBody().asString();
-//        System.out.println("Raw Response:");
-//        System.out.println(rawResponse);
     }
 
     @Test
     public void createBooking() {
 
         Date date = new Date();
-        SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDate today = new LocalDate().now();
         LocalDate tomorrow = new LocalDate().now().plusDays(1);
 
         BookingDates bookingdates = BookingDates.builder()
-                .checkin(dmyFormat.format(date))
-                .checkout(dmyFormat.format(date).formatted(tomorrow))
+                .checkin(valueOf(today))
+                .checkout(valueOf(tomorrow))
                 .build();
 
         BookingId body = new BookingId().builder()
@@ -98,11 +73,8 @@ public class ApiTests {
                 .post("/booking");
 
         response.prettyPrint();
-//        response.then().assertThat().body(body.getFirstname().equals("Valera"), true);
 
         response.as(ResponseBooking.class);
-//        JSONObject response2 = new JSONObject(response.getBody());
-//        ((JSONObject)response2.get("bookingid")).get("firstname");
     }
 
     @Test
@@ -129,17 +101,11 @@ public class ApiTests {
         Response response2 = RestAssured.given()
                 .log().all()
                 .spec(RestAssured.requestSpecification)
-//                .contentType(ContentType.JSON)
                 .header("Accept", "application/json")
-//                .cookie(TOKEN, TOKEN_VALUE)
                 .body(body)
                 .put("/booking/" + 416);
 
         response2.getBody().asString();
-
-//        JSONObject response3 = new JSONObject(response2.body());
-//        ((JSONObject)response3.get("/booking/" + 416)).get("firstname");
-
     }
 
     @Test
@@ -155,9 +121,6 @@ public class ApiTests {
                 .patch("/booking/" + findFirstBooking());
 
         response.prettyPrint();
-
-//        response3.then().body("totalprice", equals("500"));
-
     }
 
     @Test
@@ -171,18 +134,11 @@ public class ApiTests {
 
         response.prettyPrint();
         response.then().assertThat().statusCode(201);
-//        response.as(DeleteResponse.class);
-
     }
 
     private Integer findFirstBooking() {
         Response getBookings = RestAssured.get("/booking");
-//        List<Integer> booking = getBookings.jsonPath().getList("/booking");
 
-//        JsonPath getBookingsList = new JsonPath(getBookings.asString());
-//        int bookingListSize = j.getInt("Location.size()");
-//        for(int i=0; i<bookingListSize; i++) {
-//        }
         return getBookings.then().extract().jsonPath().get("bookingid[0]");
     }
 }
