@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class BookingDates {
-    private Date checkin;
-    private Date checkout;
+    private String checkin;
+    private String checkout;
 
 }
